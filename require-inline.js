@@ -27,6 +27,9 @@
  *
  */
 
+//make volo think this is an amd module
+if (false) define(null);
+
 (function() {
 
   //get the script tag for this script
@@ -88,6 +91,3 @@
   // remove this script tag
   scriptTag.parentNode.removeChild(scriptTag);
 })();
-
-//make volo think this is an amd module
-if (false) define(null);
