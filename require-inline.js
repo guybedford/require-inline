@@ -90,4 +90,4 @@
 })();
 
 //make volo think this is an amd module
-define(null);
+if (false) define(null);
