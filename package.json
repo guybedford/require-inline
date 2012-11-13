@@ -1,5 +1,4 @@
 {
-  "amd": {},
   "volo": {
     "url": "https://raw.github.com/guybedford/require-inline/{version}/require-inline.js"
   }
