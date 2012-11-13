@@ -74,9 +74,9 @@ It respects configuration, dependencies and plugins.
   is a synchronous require by evaluating `requirejs.inlineRequire`, allowing them to use to synchronous AJAX where suitable.
 * If a dependency has already been requested using an asynchronous require call, it won't be re-requested synchronously.
 
-#### Defined require calls - not recommended
+#### Completely synchronous require - Defined require calls (not recommended)
 
-A 'defined require' can also be made after this script, using the natural RequireJS syntax:
+A 'defined require' that is completely synchronous can also be made after this script, using the natural RequireJS syntax:
 
 ```javascript
   var definition = require('defId');
