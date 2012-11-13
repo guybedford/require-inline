@@ -20,8 +20,8 @@
  *   - A subsequent inline script can rely on the fact that dep and all its
  *     sub-dependencies will have been loaded already
  *   - If the dependency maps to a layer, the entire layer will be downloaded and defined synchronously.
- *   - If the dependency or a subdependency uses a loader plugin, a fifth argument will be passed
- *     into the 'load' call - a 'true' sync parameter.
+ *   - If the dependency or a subdependency uses a loader plugin, it can check require.inlineRequire
+ *     to tell if it should be sync.
  *     If a loader plugin doesn't run the callback synchronously the dependency won't be defined
  *   - By default, the context is '_'
  *
@@ -49,6 +49,7 @@ if (false) define(null);
     // override the load and nextTick methods for the context
     // we temporarily change to a sync load putting it back after
     // - the beauty of sync is that we can do things like this without conflict
+    // (as long as we put them back in the same process)
     var _contextLoad = context.load;
     var _contextTick = context.nextTick;
     
@@ -64,11 +65,13 @@ if (false) define(null);
     }
     
     // do the require
-    context.require([requireDep], function() {
-      context.nextTick = _contextTick;
-      context.load = _contextLoad;
-      delete requirejs.inlineRequire;
-    });
+    context.require([requireDep]);
+    
+    // immediately return the load and tick apis
+    // if it hasn't fully required, so be it
+    delete requirejs.inlineRequire;
+    context.nextTick = _contextTick;
+    context.load = _contextLoad;
   }
   else {
   
