@@ -26,6 +26,15 @@
  *   - By default, the context is '_'
  *
  */
+
+/*
+//make volo think this is amd to avoid the message (its regular expression is no match for my comment block)...
+
+define(function() {
+ return {};
+});
+
+*/
 (function() {
 
   //get the script tag for this script
