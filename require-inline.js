@@ -27,14 +27,6 @@
  *
  */
 
-/*
-//make volo think this is amd to avoid the message (its regular expression is no match for my comment block)...
-
-define(function() {
- return {};
-});
-
-*/
 (function() {
 
   //get the script tag for this script
@@ -96,3 +88,6 @@ define(function() {
   // remove this script tag
   scriptTag.parentNode.removeChild(scriptTag);
 })();
+
+//make volo think this is an amd module
+define(null);
