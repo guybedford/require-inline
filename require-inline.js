@@ -28,7 +28,7 @@
  */
 
 //make volo think this is an amd module
-//if (false) define(null);
+if (false) define(null);
 
 (function() {
 
