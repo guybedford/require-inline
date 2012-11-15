@@ -77,6 +77,8 @@ if (false) define(null);
     // do the require, if it hasn't fully required, so be it
     requirejs.s.contexts[requireContext].require([requireDep]);
     disableSyncLoad();
+    //remove this script tag
+    scriptTag.parentNode.removeChild(scriptTag);
   }
   else {
     // check for data-attributes indicating a load callback
@@ -95,9 +97,7 @@ if (false) define(null);
       //remove this script tag and the one before it used for the load
       var prevScript = scriptTag.previousSibling;
       prevScript.parentNode.removeChild(prevScript);
+      scriptTag.parentNode.removeChild(scriptTag);
     }
   }
-  
-  // remove this script tag
-  scriptTag.parentNode.removeChild(scriptTag);
 })();
