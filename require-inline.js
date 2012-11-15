@@ -35,21 +35,15 @@ if (false) define(null);
   //get the script tag for this script
   var scriptTag = Array.prototype.pop.call(document.getElementsByTagName('script'));
   
-  // check for data-attribute indicating to do a load
-  var requireDep = scriptTag.getAttribute('data-require');
-  
-  // do a load
-  if (requireDep) {
-    var requireContext = scriptTag.getAttribute('data-context') || '_';
-    var context = requirejs.s.contexts[requireContext];
-    
+  // override the load and nextTick methods for the context
+  // we temporarily change to a sync load putting it back after
+  // - the beauty of sync is that we can do things like this without conflict
+  // (as long as we put them back in the same process)
+  var enableSyncLoad = function(contextName) {
+    var context = requirejs.s.contexts[contextName]
     // marker to check if this is an inline require
     requirejs.inlineRequire = requireContext;
     
-    // override the load and nextTick methods for the context
-    // we temporarily change to a sync load putting it back after
-    // - the beauty of sync is that we can do things like this without conflict
-    // (as long as we put them back in the same process)
     var _contextLoad = context.load;
     var _contextTick = context.nextTick;
     
@@ -61,29 +55,42 @@ if (false) define(null);
       //two scripts - first is loading script, second is this script again, but with data attributes for callback triggering
       document.write(lt + 'script type="text/javascript" src="' + url + '">' + lt + '/script>');
       document.write(lt + 'script type="text/javascript" src="' + scriptTag.src + '" ' +
-        'data-requiremodule="' + id + '" data-requirecontext="' + requireContext + '">' + lt + '/script>');
+        'data-requiremodule="' + id + '" data-requirecontext="' + contextName + '">' + lt + '/script>');
     }
     
-    // do the require
-    context.require([requireDep]);
-    
-    // immediately return the load and tick apis
-    // if it hasn't fully required, so be it
-    delete requirejs.inlineRequire;
-    context.nextTick = _contextTick;
-    context.load = _contextLoad;
+    // immediately return the disable function
+    // must be run in the same cycle to revert the load and tick apis
+    return function() {
+      delete requirejs.inlineRequire;
+      context.nextTick = _contextTick;
+      context.load = _contextLoad;
+    }
+  }  
+  
+  // check for data-attribute indicating to do a load
+  var requireDep = scriptTag.getAttribute('data-require');
+  
+  // do a load
+  if (requireDep) {
+    var requireContext = scriptTag.getAttribute('data-context') || '_';
+    var disableSyncLoad = enableSyncLoad(requireContext);
+    // do the require, if it hasn't fully required, so be it
+    requirejs.s.contexts[requireContext].require([requireDep]);
+    disableSyncLoad();
   }
   else {
-  
     // check for data-attributes indicating a load callback
     var requireModule = scriptTag.getAttribute('data-requiremodule');
     var requireContext = scriptTag.getAttribute('data-requirecontext');
     
     //if so - this load is a loaded callback -> trigger
     if (requireModule && requireContext) {
-      var context = requirejs.s.contexts[requireContext];
       
-      context.completeLoad(requireModule);
+      var disableSyncLoad = enableSyncLoad(requireContext);
+      
+      requirejs.s.contexts[requireContext].completeLoad(requireModule);
+      
+      disableSyncLoad();
       
       //remove this script tag and the one before it used for the load
       var prevScript = scriptTag.previousSibling;
