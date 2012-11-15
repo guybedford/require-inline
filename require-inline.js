@@ -25,6 +25,12 @@
  *     If a loader plugin doesn't run the callback synchronously the dependency won't be defined
  *   - By default, the context is '_'
  *
+ * To load multiple dependencies, use:
+ *
+ * <script src="require-inline.js" data-require="depId,depId2"></script>
+ *
+ * If you have any dependencies that actually need commas, simply escape the comma with a '\,'.
+ * 
  */
 
 //make volo think this is an amd module
@@ -72,10 +78,19 @@ if (false) define(null);
   
   // do a load
   if (requireDep) {
+    // split with a comma for multiple dependencies
+    var deps = requireDep.split(',');
+    // join back any items that were actually escaped (\,)
+    for (var i = 0; i < deps.length; i++)
+      if (deps[i].substr(deps[i].length - 1) == '\\') {
+        deps[i] = deps[i] + ',' + deps[i + 1];
+        deps.splice(i + 1, 1);
+      }
+    
     var requireContext = scriptTag.getAttribute('data-context') || '_';
     var disableSyncLoad = enableSyncLoad(requireContext);
     // do the require, if it hasn't fully required, so be it
-    requirejs.s.contexts[requireContext].require([requireDep]);
+    requirejs.s.contexts[requireContext].require(deps);
     disableSyncLoad();
     //remove this script tag
     scriptTag.parentNode.removeChild(scriptTag);
