@@ -42,7 +42,7 @@ if (false) define(null);
   var enableSyncLoad = function(contextName) {
     var context = requirejs.s.contexts[contextName]
     // marker to check if this is an inline require
-    requirejs.inlineRequire = requireContext;
+    requirejs.inlineRequire = contextName;
     
     var _contextLoad = context.load;
     var _contextTick = context.nextTick;
