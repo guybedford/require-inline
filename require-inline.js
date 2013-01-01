@@ -33,6 +33,26 @@
  * 
  */
 
+/*
+
+
+var config = context.config.config;
+
+var _textXhr = config.text.createXhr;
+var _csXhr = config.cs.createXhr;
+
+config.text.createXhr = createXhr;
+config.cs.createXhr = createXhr;
+
+//do stuff
+
+
+config.text.createXhr = _textXhr;
+config.cs.createXhr = _csXhr;
+
+
+ */
+
 //make volo think this is an amd module
 if (false) define(null);
 
@@ -89,9 +109,14 @@ if (false) define(null);
     
     var requireContext = scriptTag.getAttribute('data-context') || '_';
     var disableSyncLoad = enableSyncLoad(requireContext);
+    var defined = false;
     // do the require, if it hasn't fully required, so be it
-    requirejs.s.contexts[requireContext].require(deps);
+    requirejs.s.contexts[requireContext].require(deps, function() {
+      defined = true;
+    });
     disableSyncLoad();
+    if (!defined)
+      window.console && console.log && console.log('Modules ' + deps.toString() + ' not synchronously defined.');
     //remove this script tag
     scriptTag.parentNode.removeChild(scriptTag);
   }
