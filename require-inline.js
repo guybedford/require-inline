@@ -109,14 +109,8 @@ if (false) define(null);
     
     var requireContext = scriptTag.getAttribute('data-context') || '_';
     var disableSyncLoad = enableSyncLoad(requireContext);
-    var defined = false;
-    // do the require, if it hasn't fully required, so be it
-    requirejs.s.contexts[requireContext].require(deps, function() {
-      defined = true;
-    });
+    requirejs.s.contexts[requireContext].require(deps);
     disableSyncLoad();
-    if (!defined)
-      window.console && console.log && console.log('Modules ' + deps.toString() + ' not synchronously defined.');
     //remove this script tag
     scriptTag.parentNode.removeChild(scriptTag);
   }
@@ -131,6 +125,15 @@ if (false) define(null);
       var disableSyncLoad = enableSyncLoad(requireContext);
       
       requirejs.s.contexts[requireContext].completeLoad(requireModule);
+
+      // try load to check if its all working
+      var defined = false;
+      requirejs.s.contexts[requireContext].require([requireModule], function() {
+        defined = true;
+      });
+
+      if (!defined)
+        window.console && console.log && console.log('Modules ' + deps.toString() + ' not synchronously defined.');
       
       disableSyncLoad();
       
