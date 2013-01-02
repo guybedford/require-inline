@@ -133,7 +133,7 @@ if (false) define(null);
       });
 
       if (!defined)
-        window.console && console.log && console.log('Modules ' + deps.toString() + ' not synchronously defined.');
+        window.console && console.log && console.log('Module ' + requireModule + ' not synchronously defined.');
       
       disableSyncLoad();
       
