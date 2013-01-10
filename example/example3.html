@@ -1,0 +1,22 @@
+<!-- begin sorry excuse for a test -->
+<!doctype html>
+<html>
+<head>
+  <script>
+    var require = {
+      map: {
+        '*': {
+          cs: 'require-coffee/cs'
+        }
+      }
+    };
+  </script>
+  <script src='require.js'></script>
+</head>
+<body>
+  <script src='../require-inline.js' data-require='cs!test'></script>
+  <script>
+    document.write(require('cs!test'));
+  </script>
+</body>
+</html>

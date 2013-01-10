@@ -126,15 +126,6 @@ if (false) define(null);
       
       requirejs.s.contexts[requireContext].completeLoad(requireModule);
 
-      // try load to check if its all working
-      var defined = false;
-      requirejs.s.contexts[requireContext].require([requireModule], function() {
-        defined = true;
-      });
-
-      if (!defined)
-        window.console && console.log && console.log('Module ' + requireModule + ' not synchronously defined.');
-      
       disableSyncLoad();
       
       //remove this script tag and the one before it used for the load
