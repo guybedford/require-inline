@@ -9,6 +9,10 @@
  * and if this was implemented it would have to use eval, which is not worthwhile.
  *
  * Usage:
+ *
+ *   <script>require.inline('dep');</script>
+ *
+ * OR for CSP compatibility:
  * 
  *   <script src="require-inline.js" data-context="_" data-require="depId"></script>
  *   <script>
@@ -93,6 +97,18 @@ if (false) define(null);
     }
   }  
   
+  // add a require.inline function call
+  if (!requirejs.inline) {
+    requirejs.inline = function(deps, context) {
+      if (typeof deps == 'string')
+        deps = [deps];
+      
+      var disableSyncLoad = enableSyncLoad(context || '_');
+      requirejs.s.contexts[context].require(deps);
+      disableSyncLoad();
+    }
+  }
+  
   // check for data-attribute indicating to do a load
   var requireDep = scriptTag.getAttribute('data-require');
   
@@ -107,10 +123,8 @@ if (false) define(null);
         deps.splice(i + 1, 1);
       }
     
-    var requireContext = scriptTag.getAttribute('data-context') || '_';
-    var disableSyncLoad = enableSyncLoad(requireContext);
-    requirejs.s.contexts[requireContext].require(deps);
-    disableSyncLoad();
+    requirejs.inline(deps, scriptTag.getAttribute('data-context'));
+    
     //remove this script tag
     scriptTag.parentNode.removeChild(scriptTag);
   }
