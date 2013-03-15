@@ -1,7 +1,7 @@
 Require-inline
 ===
 
-Used for synchronous inline requires in RequireJS while the document is being written only. Useful for enhancing widget HTML instantly without as a domready alternative while maintaining RequireJS compatibility.
+Used for synchronous inline requires in RequireJS while the document is being written only. Useful for enhancing widget HTML instantly as a domready alternative while maintaining RequireJS compatibility.
 
 ### Example use:
 
