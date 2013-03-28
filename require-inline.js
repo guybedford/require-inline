@@ -103,7 +103,9 @@ if (false) define(null);
       if (typeof deps == 'string')
         deps = [deps];
       
-      var disableSyncLoad = enableSyncLoad(context || '_');
+      context = context || '_';
+      
+      var disableSyncLoad = enableSyncLoad(context);
       requirejs.s.contexts[context].require(deps);
       disableSyncLoad();
     }
